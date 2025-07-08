@@ -14,12 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <header>Header</header>
       <body
       >
         {children}
       </body>
-      <footer>Footer</footer>
     </html>
   );
 }
