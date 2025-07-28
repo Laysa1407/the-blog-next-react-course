@@ -1,16 +1,17 @@
-import clsx from "clsx";
 import CircularProgress from "./components/CircularProgress";
 import { Suspense } from "react";
 import { PostList } from "./components/PostList";
+import { PostFeatured } from "./components/PostFeatured";
 
 export default function HomePage() {
     return (
-        <div className={clsx("text-xl", " font-bold", " text-blue-500")}>
-            <header>Header</header>
-            <Suspense fallback={<CircularProgress />}>
+        <>
+            <Suspense
+                fallback={<CircularProgress constentStyles="min-h-20 mb-15" />}
+            >
+                <PostFeatured />
                 <PostList />
             </Suspense>
-            <footer>Footer</footer>
-        </div>
+        </>
     );
 }
