@@ -5,7 +5,7 @@ import { postsTable } from "@/app/db/drizzle/schemas";
 
 export class DrizzlePostRepository implements PostRepository {
     async findAllPublic(): Promise<PostModel[]> {
-        const posts = drizzleDb.query.posts.findMany({
+        const posts = await drizzleDb.query.posts.findMany({
             orderBy: (posts, { desc }) => desc(postsTable.createdAt),
             where: (posts, { eq }) => eq(posts.published, true),
         });
@@ -13,16 +13,52 @@ export class DrizzlePostRepository implements PostRepository {
         return posts;
     }
 
-    async findById(id: string): Promise<PostModel> {}
+    async findById(id: string): Promise<PostModel> {
+        const post = await drizzleDb.query.posts.findFirst({
+            where: (posts, { eq }) => eq(posts.id, id),
+        });
 
-    async findBySlugPublic(slug: string): Promise<PostModel> {}
+        console.log("post", post);
 
-    async findAll(): Promise<PostModel[]> {}
+        if (!post) throw new Error("Post não encontrado");
+
+        return post;
+    }
+
+    async findBySlugPublic(slug: string): Promise<PostModel> {
+        const post = await drizzleDb.query.posts.findFirst({
+            where: (posts, { eq, and }) =>
+                and(eq(posts.published, true), eq(posts.slug, slug)),
+        });
+
+        console.log("post", post);
+
+        if (!post) throw new Error("Post não encontrado");
+
+        return post;
+    }
+
+    async findAll(): Promise<PostModel[]> {
+        const posts = await drizzleDb.query.posts.findMany({
+            orderBy: (posts, { desc }) => desc(postsTable.createdAt),
+        });
+
+        return posts;
+    }
 }
 
 (async () => {
-    const repo = new DrizzlePostRepository();
-    const posts = await repo.findAllPublic();
+    "    9eb8b7ac-2b48-4835-880a-a1c798e1a595 true";
+    "6b204dab-2312-4525-820a-a0463560835f false";
 
-    posts.forEach((post) => console.log(post.author, post.published));
+    //     organizacao-pessoal-por-onde-comecar true
+    // 10-habitos-para-aumentar-sua-produtividade false
+
+    const repo = new DrizzlePostRepository();
+    // const posts = await repo.findAllPublic();
+    const post = await repo.findBySlugPublic(
+        "10-habitos-para-aumentar-sua-produtividade"
+    );
+    console.log(post);
+    // posts.forEach((post) => console.log(post.slug, post.published));
 })();

@@ -21,8 +21,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PostPage({ params }: Props) {
     const { slug } = await params;
 
-    throw new Error("teste");
-
     return (
         <Suspense
             fallback={<CircularProgress constentStyles="min-h-20 mb-16" />}
