@@ -23,9 +23,9 @@ export function ErrorMessage({
                 <div>
                     <p className=" flex font-medium mb-8 flex-col items-center gap-5">
                         <WifiOff color="#505050" size={100} />
-                        <p className="text-5xl mb-4 font-extrabold">
+                        <span className="text-5xl mb-4 font-extrabold">
                             {contentTitle}
-                        </p>
+                        </span>
                         {content}
                     </p>
                     <div className="flex justify-center">

@@ -9,7 +9,9 @@ export default function notFoundPage() {
                 <div>
                     <p className=" flex font-medium mb-8 flex-col items-center gap-5">
                         <WifiOff color="#505050" size={100} />
-                        <p className="text-5xl mb-4 font-extrabold">404</p>
+                        <span className="text-5xl mb-4 font-extrabold">
+                            404
+                        </span>
                         Erro 404 - A página que voce está tentando acessar não
                         foi não encontrada!
                     </p>
