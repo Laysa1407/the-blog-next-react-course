@@ -1,11 +1,21 @@
 import { findAllPostsByAdmin } from "@/lib/queries/admin";
 import { PostModel } from "@/models/post/post-model";
 import clsx from "clsx";
-import { Trash2 } from "lucide-react";
 import Link from "next/link";
+import { DeletePostButton } from "../DeletePostButton";
+import { ErrorMessage } from "../ErrorMessage";
 
 export default async function PostsListAdmin() {
     const posts = await findAllPostsByAdmin();
+
+    if (posts.length <= 0) {
+        return (
+            <ErrorMessage
+                contentTitle={"Ei"}
+                content={"Voce ainda não tem nenhum post criado!"}
+            ></ErrorMessage>
+        );
+    }
 
     return (
         <div className="mb-16 ">
@@ -29,17 +39,7 @@ export default async function PostsListAdmin() {
                                 </span>
                             </div>
                         )}
-                        <button
-                            className={clsx(
-                                "text-red-500 cursor-pointer transition",
-                                "[&>svg]:w-4 [&>svg]:h-4",
-                                "hover:scale-120 hover:text-red-700"
-                            )}
-                            aria-label="Apagar post "
-                            title="Apagar post"
-                        >
-                            <Trash2 />
-                        </button>
+                        <DeletePostButton id={post.id} />
                     </div>
                 );
             })}

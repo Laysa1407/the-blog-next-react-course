@@ -4,6 +4,9 @@ import { findAllPublicPosts } from "@/lib/queries/public";
 
 export async function PostFeatured() {
     const posts = await findAllPublicPosts();
+
+    if (posts.length <= 0) return null;
+
     const postDestaque = posts[0];
 
     return (
