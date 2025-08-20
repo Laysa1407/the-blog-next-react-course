@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { Trash2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import Dialog from "../Dialog/Dialog";
+import { toast } from "react-toastify";
 
 type ButtonProps = {
     id: string;
@@ -18,6 +19,8 @@ export function DeletePostButton({ id }: ButtonProps) {
     }
 
     function handleClickConfirm() {
+        toast.dismiss();
+
         if (!confirm("Tem certeza que deseja apagar este post?")) return;
         startTransition(async () => {
             const result = await deletePostAction(id);
@@ -25,8 +28,9 @@ export function DeletePostButton({ id }: ButtonProps) {
             setOpenDialog(false);
 
             if (result.error) {
-                alert(`Erro: ${result.error}`);
+                toast.error(result.error);
             }
+            toast.success("Deletado com sucesso!");
         });
     }
 

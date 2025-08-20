@@ -1,9 +1,12 @@
+import { ManagerPostForm } from "@/app/components/ManagerPostForm";
+
 export const dynamic = "force-dynamic";
 
 export default async function AdminNewPostPage() {
     return (
-        <div className="py-16 text-2xl">
-            <h1>AdminNewPostPage</h1>
-        </div>
+        <>
+            <h1>Criar Post</h1>
+            <ManagerPostForm />
+        </>
     );
 }

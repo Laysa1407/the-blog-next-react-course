@@ -10,6 +10,6 @@ import { postsTable } from "./schemas";
         await drizzleDb.delete(postsTable); // ISSO LIMPA A BASE DE DADOS
         await drizzleDb.insert(postsTable).values(posts);
     } catch (e) {
-        console.log("OCORREU UM ERRO", e);
+        console.error(e);
     }
 })();
