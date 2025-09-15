@@ -1,7 +1,7 @@
 "use client";
 
 import { ImageUp } from "lucide-react";
-import React, { useEffect, useRef, useTransition } from "react";
+import React, { useRef, useTransition } from "react";
 import { Button } from "../Button";
 import { toast } from "react-toastify";
 import { PreviewImage } from "../PreviewImage";
@@ -24,19 +24,23 @@ export function ImageUploader() {
     function handleChange() {
         toast.dismiss();
 
-        if (!ref.current) return;
+        if (!ref.current) {
+            return setImage("");
+        }
 
         const fileInput = ref.current;
         const file = fileInput?.files?.[0];
 
-        if (!file) return;
-        if (file.size > MAX_SIZE_IMAGE) {
-            toast.error("Esta imagem é muito grande. Max. 900kb");
-            fileInput.value = "";
+        if (!file) {
             return;
         }
 
-        setImage(URL.createObjectURL(file));
+        if (file.size > MAX_SIZE_IMAGE) {
+            toast.error("Esta imagem é muito grande. Max. 900kb");
+            fileInput.value = "";
+            setImage("");
+            return;
+        }
 
         const formData = new FormData();
         formData.append("file", file);
@@ -46,10 +50,11 @@ export function ImageUploader() {
             if (result.error) {
                 toast.error(result.error);
                 fileInput.value = "";
+                setImage("");
                 return;
             }
-
-            toast.success(result.url);
+            setImage(URL.createObjectURL(file));
+            toast.success("Imagem enviada");
         });
 
         fileInput.value = "";
@@ -61,12 +66,17 @@ export function ImageUploader() {
                 type="button"
                 className="self-start"
                 onClick={handleClickOpen}
+                disabled={isPending}
             >
                 <ImageUp />
                 Enviar imagem
             </Button>
             {image && (
                 <div>
+                    <label className="text-sm">
+                        <b>URL</b>
+                        {image}
+                    </label>
                     <PreviewImage urlImg={image} altImg="imagem" />
                 </div>
             )}
