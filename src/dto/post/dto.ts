@@ -6,7 +6,9 @@ export const makePublicPostFromDb = (post: PostModel): PublicPost => {
     return makePartialPublicPost(post);
 };
 
-export const makePartialPublicPost = (post: Partial<PostModel>): PublicPost => {
+export const makePartialPublicPost = (
+    post: Partial<PostModel | undefined>
+): PublicPost => {
     return {
         id: post?.id || "",
         title: post?.title || "",

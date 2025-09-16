@@ -21,9 +21,25 @@ export async function deletePostAction(id: string) {
         };
     }
 
+    let postExcluido;
+
+    try {
+        postExcluido = await postRepository.delete(id);
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return {
+                error: error.message,
+            };
+        }
+
+        return {
+            error: "Erro ao deletar post",
+        };
+    }
+
     await drizzleDb.delete(postsTable).where(eq(postsTable.id, id));
     revalidateTag("posts");
-    revalidatePath(`post-${post.slug}`);
+    revalidatePath(`post-${postExcluido.slug}`);
 
     return {
         error: "",

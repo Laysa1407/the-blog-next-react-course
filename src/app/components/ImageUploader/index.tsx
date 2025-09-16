@@ -9,7 +9,11 @@ import { uploadImageAction } from "@/actions/upload/upload-image-action";
 
 const MAX_SIZE_IMAGE = 921600;
 
-export function ImageUploader() {
+type ImageUploaderProps = {
+    disabled: boolean;
+};
+
+export function ImageUploader({ disabled = false }: ImageUploaderProps) {
     const ref = useRef<HTMLInputElement>(null);
     const [image, setImage] = React.useState<string>("");
 
@@ -66,7 +70,7 @@ export function ImageUploader() {
                 type="button"
                 className="self-start"
                 onClick={handleClickOpen}
-                disabled={isPending}
+                disabled={isPending || disabled}
             >
                 <ImageUp />
                 Enviar imagem
@@ -87,6 +91,7 @@ export function ImageUploader() {
                 accept="image/*"
                 ref={ref}
                 onChange={handleChange}
+                disabled={isPending || disabled}
             ></input>
         </div>
     );

@@ -12,7 +12,7 @@ export async function PostFeatured() {
     return (
         <section className="grid grid-cols-1 gap-8 mb-16 sm:grid-cols-2 group items-baseline">
             <PostCoverImage
-                linkProps={{ href: `/posts/${postDestaque.slug}` }}
+                linkProps={{ href: `/post/${postDestaque.slug}` }}
                 imageProps={{
                     width: 1200,
                     height: 720,
@@ -27,7 +27,7 @@ export async function PostFeatured() {
                 title={postDestaque.title}
                 key={postDestaque.id}
                 postHeading={"h2"}
-                postLink={`/posts/${postDestaque.slug}`}
+                postLink={`/post/${postDestaque.slug}`}
             />
         </section>
     );

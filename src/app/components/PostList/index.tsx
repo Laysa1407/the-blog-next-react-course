@@ -34,7 +34,7 @@ export async function PostList() {
                             title={post.title}
                             key={post.id}
                             postHeading={"h2"}
-                            postLink={`/posts/${post.slug}`}
+                            postLink={`/post/${post.slug}`}
                         />
                     </div>
                 );

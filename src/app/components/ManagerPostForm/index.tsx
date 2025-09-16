@@ -6,34 +6,78 @@ import { Button } from "../Button";
 import { MarkdownEditor } from "../MarckDowEditor/indext";
 import { ImageUploader } from "../ImageUploader";
 import { makePartialPublicPost, PublicPost } from "@/dto/post/dto";
-import { createPostAction } from "@/actions/post/create-post-action";
+import { updatePostAction } from "@/actions/post/update-post-action";
 import { toast } from "react-toastify";
+import { createPostAction } from "@/actions/post/create-post-action copy";
+import { useRouter, useSearchParams } from "next/navigation";
 
-type ManagerPostFormProps = {
-    postDto: PublicPost;
+type ManagerPostFormUpdateProps = {
+    mode: "update";
+    publicPost: PublicPost;
 };
 
-export function ManagerPostForm({ postDto }: ManagerPostFormProps) {
+type ManagerPostFormCreateProps = {
+    mode: "create";
+};
+
+type ManagerPostFormProps =
+    | ManagerPostFormCreateProps
+    | ManagerPostFormUpdateProps;
+
+export function ManagerPostForm(props: ManagerPostFormProps) {
+    const { mode } = props;
+    const searchParams = useSearchParams();
+    const created = searchParams.get("created");
+    const router = useRouter();
+
+    let publicPost;
+    if (mode === "update") {
+        publicPost = props.publicPost;
+    }
+
+    const actionsMap = {
+        update: updatePostAction,
+        create: createPostAction,
+    };
     const initialState = {
-        formState: makePartialPublicPost(postDto),
+        formState: makePartialPublicPost(publicPost),
         errors: [],
     };
 
     const [state, action, isPending] = useActionState(
-        createPostAction,
+        actionsMap[mode],
         initialState
     );
 
     const { formState } = state;
+
     const [content, setContent] = React.useState<string>(
         formState?.content || ""
     );
 
     useEffect(() => {
         if (state.errors.length > 0) {
+            toast.dismiss();
             state.errors.forEach((erro) => toast.error(erro));
         }
     }, [state.errors]);
+
+    useEffect(() => {
+        if (state.success) {
+            toast.dismiss();
+            toast.success("Post Atualizado com sucesso!");
+        }
+    }, [state]);
+
+    useEffect(() => {
+        if (created === "1") {
+            toast.dismiss();
+            toast.success("Post Atualizado com sucesso!");
+            const url = new URL(window.location.href);
+            url.searchParams.delete("created");
+            router.replace(url.toString());
+        }
+    }, [created, router]);
 
     return (
         <form action={action}>
@@ -41,11 +85,11 @@ export function ManagerPostForm({ postDto }: ManagerPostFormProps) {
                 <div className="p-2 text-2xl gap-4 flex flex-col">
                     <Input
                         labelText={"ID"}
-                        name="id"
+                        name={"id"}
                         placeholder="ID gerado automáticamente"
                         type="text"
                         defaultValue={formState.id || ""}
-                        disabled={true}
+                        readOnly
                     />
 
                     <Input
@@ -54,7 +98,7 @@ export function ManagerPostForm({ postDto }: ManagerPostFormProps) {
                         placeholder="Slug gerado automáticamente"
                         type="text"
                         defaultValue={formState.slug || ""}
-                        disabled={true}
+                        readOnly
                     />
 
                     <Input
@@ -86,13 +130,13 @@ export function ManagerPostForm({ postDto }: ManagerPostFormProps) {
 
                     <MarkdownEditor
                         labelText="Conteúdo"
-                        disabled={false}
                         textAreaName="content"
                         value={content}
                         setValue={setContent}
+                        disabled={isPending}
                     />
 
-                    <ImageUploader />
+                    <ImageUploader disabled={isPending} />
 
                     <Input
                         labelText="Url da imagem de capa"
