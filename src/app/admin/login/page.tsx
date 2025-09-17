@@ -1,9 +1,7 @@
-export const dynamic = "force-dynamic";
+import FormLogin from "@/app/components/FormLogin";
 
-export default async function AdminLoginPage() {
-    return (
-        <div className="py-16 text-2xl">
-            <h1>Admin Login Page</h1>
-        </div>
-    );
+export const dinamic = "force-dynamic";
+
+export default function LoginForm() {
+    return <FormLogin />;
 }

@@ -1,6 +1,6 @@
 "use server";
 
-import { IMAGE_SERVER_URL, IMAGE_UPLOAD_DIRECTORY } from "@/app/contants";
+import { verifyLoginSession } from "@/lib/login/manage-login";
 import { File } from "buffer";
 import { mkdir, writeFile } from "fs/promises";
 import { extname, resolve } from "path";
@@ -12,10 +12,18 @@ type UploadImageActionResult = {
 
 const MAX_SIZE_IMAGE = 921600;
 
+const urlServer = process.env.IMAGE_SERVER_URL as string;
+
 export async function uploadImageAction(
     formData: FormData
 ): Promise<UploadImageActionResult> {
     const makeResult = ({ url = "", error = "" }) => ({ url, error });
+
+    const isAuthenticated = await verifyLoginSession();
+
+    if (!isAuthenticated) {
+        return makeResult({ error: "Usuário não autenticado!" });
+    }
 
     if (!(formData instanceof FormData)) {
         return makeResult({ error: "Dados Invalidos" });
@@ -36,12 +44,9 @@ export async function uploadImageAction(
 
     const imageExtension = extname(file.name);
     const uniqueImageName = `${Date.now()}${imageExtension}`;
+    const directory = process.env.IMAGE_UPLOAD_DIRECTORY as string;
 
-    const uploadFullPath = resolve(
-        process.cwd(),
-        "public",
-        IMAGE_UPLOAD_DIRECTORY
-    );
+    const uploadFullPath = resolve(process.cwd(), "public", directory);
     await mkdir(uploadFullPath, { recursive: true });
 
     const fileArrayBuffer = await file.arrayBuffer();
@@ -51,7 +56,7 @@ export async function uploadImageAction(
 
     await writeFile(fileFullpath, buffer);
 
-    const url = `${IMAGE_SERVER_URL}/${uniqueImageName}`;
+    const url = `${urlServer}/${uniqueImageName}`;
 
     return makeResult({ url: url });
 }
