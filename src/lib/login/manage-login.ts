@@ -1,5 +1,4 @@
 "use server";
-
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { SignJWT, jwtVerify } from "jose";
@@ -77,6 +76,8 @@ export async function verifyLoginSession() {
 
 export async function requireLoginSessionOrRedirect() {
     const isAuthenticated = await verifyLoginSession();
+
+    console.log("ENTROU AQUI ");
 
     if (!isAuthenticated) {
         redirect("/admin/login");
